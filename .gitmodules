@@ -4,3 +4,6 @@
 [submodule "coronavirus-machine-learning"]
 	path = coronavirus-machine-learning
 	url = https://github.com/lamharrison/coronavirus-machine-learning.git
+[submodule "coronavirus_prediction"]
+	path = coronavirus_prediction
+	url = https://github.com/eladcn/coronavirus_prediction.git
