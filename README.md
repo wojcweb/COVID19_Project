@@ -7,3 +7,4 @@ To install requirements type in terminal or anaconda powershell:<br/>
 pip install -r requirements.txt<br/>
 
 data: https://github.com/CSSEGISandData/COVID-19
+better data: https://data.europa.eu/euodp/en/data/dataset/covid-19-coronavirus-data
