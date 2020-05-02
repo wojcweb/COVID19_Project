@@ -61,7 +61,7 @@ for country in list_of_countries:
     opt = tf.keras.optimizers.Adam(learning_rate=0.0001)
     model.compile(optimizer=opt, loss='mae')
     print(model.summary())
-    num_epochs = 1500
+    num_epochs = 700
     model.fit_generator(train_generator, epochs=num_epochs, verbose=1)
     prediction = model.predict_generator(train_generator)
 
@@ -95,9 +95,12 @@ for country in list_of_countries:
     all_data = np.concatenate([cases_data, forecast])
     all_dates = list(covid_dataset['dateRep']) + forecast_dates
 
-    plt.title(country)
-    plt.plot(all_dates, all_data)
-    plt.show()
+    # plt.title(country)
+    # plt.plot(all_dates, all_data)
+    # plt.show()
 
     all_data = all_data.cumsum()
-    results.append((country, all_data[-1]))
+    results.append((country, all_dates[-1], all_data[-1]))
+
+results = pd.DataFrame(results)
+results.to_csv("result2.csv")
