@@ -58,8 +58,8 @@ for country in list_of_countries:
     model.add(tf.keras.layers.LSTM(16, activation='relu', input_shape=(look_back, 1)))
     model.add(tf.keras.layers.Dense(1, activation='linear'))
 
-    opt = tf.keras.optimizers.Adam(learning_rate=0.0001)
-    model.compile(optimizer=opt, loss='mae')
+    opt = tf.keras.optimizers.Adam(learning_rate=0.0005)
+    model.compile(optimizer=opt, loss='mse')
     print(model.summary())
     num_epochs = 500
     model.fit_generator(train_generator, epochs=num_epochs, verbose=1)
@@ -103,4 +103,4 @@ for country in list_of_countries:
     results.append((country, all_dates[-1], all_data[-1], forecast))
 
 results = pd.DataFrame(results)
-results.to_csv("result4.csv")
+results.to_csv("result5.csv")
