@@ -100,7 +100,7 @@ for country in list_of_countries:
     # plt.show()
 
     all_data = all_data.cumsum()
-    results.append((country, all_dates[-1], all_data[-1]))
+    results.append((country, all_dates[-1], all_data[-1], forecast))
 
 results = pd.DataFrame(results)
-results.to_csv("result3.csv")
+results.to_csv("result4.csv")
