@@ -1,13 +1,10 @@
 import pandas as pd
 import datetime
-import json
 import numpy as np
 import os.path
-from pathlib import Path
 import urllib.request
 import tensorflow as tf
 from tensorflow.keras.preprocessing.sequence import TimeseriesGenerator
-import matplotlib.pyplot as plt
 
 # DATE TO PREDICT IN STRING FORMAT "%Y-%m-%d"
 
@@ -35,7 +32,6 @@ covid_dataset_ref = covid_dataset.copy()
 #     cum_sum = covid_dataset.iloc[country_indexes, 1].cumsum()
 #     covid_dataset.iloc[country_indexes, 1] = cum_sum
 
-country_for_test = list_of_countries[-13]
 results = []
 
 for country in list_of_countries:
