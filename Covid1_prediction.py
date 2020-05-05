@@ -9,6 +9,8 @@ import tensorflow as tf
 from tensorflow.keras.preprocessing.sequence import TimeseriesGenerator
 import matplotlib.pyplot as plt
 
+# DATE TO PREDICT IN STRING FORMAT "%Y-%m-%d"
+
 try:
     os.remove("./data_covid.csv")
 except FileNotFoundError:
@@ -59,9 +61,9 @@ for country in list_of_countries:
     model.add(tf.keras.layers.Dense(1, activation='linear'))
 
     opt = tf.keras.optimizers.Adam(learning_rate=0.0005)
-    model.compile(optimizer=opt, loss='mse')
+    model.compile(optimizer=opt, loss='mae')
     print(model.summary())
-    num_epochs = 500
+    num_epochs = 300
     model.fit_generator(train_generator, epochs=num_epochs, verbose=1)
     prediction = model.predict_generator(train_generator)
 
@@ -86,7 +88,7 @@ for country in list_of_countries:
         return prediction_dates
 
 
-    num_prediction = 9
+    num_prediction = 7
     forecast = predict(num_prediction, model)
     forecast_dates = predict_dates(num_prediction)
 
@@ -100,7 +102,7 @@ for country in list_of_countries:
     # plt.show()
 
     all_data = all_data.cumsum()
-    results.append((country, all_dates[-1], all_data[-1], forecast))
+    results.append((country, all_dates[-1], np.floor(all_data[-1]), np.floor(forecast)))
 
 results = pd.DataFrame(results)
-results.to_csv("result5.csv")
+results.to_csv("result8.csv")
