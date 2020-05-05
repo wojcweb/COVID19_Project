@@ -29,6 +29,29 @@ def get_europe_data(covid_dataset):
     return list_of_countries
 
 
+def get_country_data(covid_dataset, country):
+    country_dataset = \
+        covid_dataset.loc[covid_dataset["countriesAndTerritories"] == country]
+    country_dataset["dateRep"] = pd.to_datetime(country_dataset["dateRep"],
+                                                format="%d/%m/%Y")
+    cases_data = np.array(country_dataset['cases'].values)
+    cases_data = np.reshape(cases_data, (-1, 1))
+    return country_dataset, cases_data
+
+
+def get_train_generator(cases_data, look_back):
+    return TimeseriesGenerator(cases_data, cases_data,
+                               length=look_back, batch_size=10)
+
+
+def define_model(look_back):
+    model = tf.keras.Sequential()
+    model.add(tf.keras.layers.LSTM(16, activation='relu',
+                                   input_shape=(look_back, 1)))
+    model.add(tf.keras.layers.Dense(1, activation='linear'))
+    return model
+
+
 def predict(num_prediction, model, cases_data, look_back):
     prediction_list = cases_data[-look_back:]
     for _ in range(num_prediction):
@@ -51,41 +74,29 @@ def save_results(results):
 
 
 def main():
+    look_back = 3
+    num_prediction = 7
+    num_epochs = 300
     covid_dataset = import_covid_data()
     list_of_countries = get_europe_data(covid_dataset)
     results = []
     for country in list_of_countries:
-        covid_dataset_local = covid_dataset.loc[covid_dataset["countriesAndTerritories"] == country]
-        covid_dataset_local["dateRep"] = pd.to_datetime(covid_dataset_local["dateRep"], format="%d/%m/%Y")
-        cases_data = np.array(covid_dataset_local['cases'].values)
-        cases_data = np.reshape(cases_data, (-1, 1))
-
-        look_back = 3
-
-        train_generator = TimeseriesGenerator(cases_data, cases_data, length=look_back, batch_size=10)
-
-        # model
-        model = tf.keras.Sequential()
-        model.add(tf.keras.layers.LSTM(16, activation='relu', input_shape=(look_back, 1)))
-        model.add(tf.keras.layers.Dense(1, activation='linear'))
+        country_dataset, cases_data = get_country_data(covid_dataset, country)
+        train_generator = get_train_generator(cases_data, look_back)
+        model = define_model(look_back)
 
         opt = tf.keras.optimizers.Adam(learning_rate=0.0005)
         model.compile(optimizer=opt, loss='mae')
-        print(model.summary())
-        num_epochs = 300
         model.fit_generator(train_generator, epochs=num_epochs, verbose=1)
         model.predict_generator(train_generator)
 
-        num_prediction = 7
         forecast = predict(num_prediction, model, cases_data, look_back)
-        forecast_dates = predict_dates(num_prediction, covid_dataset_local)
-
+        forecast_dates = predict_dates(num_prediction, country_dataset)
         forecast = np.reshape(forecast, (-1, 1))
 
         all_data = np.concatenate([cases_data, forecast])
-        all_dates = list(covid_dataset_local['dateRep']) + forecast_dates
-
         all_data = all_data.cumsum()
+        all_dates = list(country_dataset['dateRep']) + forecast_dates
         results.append((country, all_dates[-1], np.floor(all_data[-1]), np.floor(forecast)))
     save_results(results)
 
