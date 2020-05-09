@@ -2,7 +2,8 @@ from os import remove
 from urllib import request
 import pandas as pd
 import numpy as np
-
+import matplotlib.pyplot as plt
+import os
 
 class DataHandler:
     covid_dataset = pd.DataFrame()
@@ -10,14 +11,24 @@ class DataHandler:
     country_dataset = pd.DataFrame()
     cases_data = np.array(1)
     results = []
+    all_dates = list()
+    all_data = np.array(1)
+    script_dir = ""
+    plots_dir = ""
 
     @classmethod
-    def download_data(cls):
+    def menage_directories(cls):
+        cls.script_dir = os.path.dirname(__file__)
+        cls.plots_dir = os.path.join(cls.script_dir, 'plots/')
+        if not os.path.isdir(cls.plots_dir):
+            os.makedirs(cls.plots_dir)
         try:
             remove("./data_covid.csv")
         except FileNotFoundError:
             print("doesn't exist")
 
+    @classmethod
+    def download_data(cls):
         url = "https://opendata.ecdc.europa.eu/covid19/casedistribution/csv"
         request.urlretrieve(url, "./data_covid.csv")
         cls.covid_dataset = pd.read_csv("./data_covid.csv")
@@ -43,12 +54,20 @@ class DataHandler:
 
     @classmethod
     def append_results(cls, country, forecast, forecast_dates):
-        all_data = np.concatenate([cls.cases_data, forecast])
-        all_data = all_data.cumsum()
-        all_dates = list(DataHandler.country_dataset['dateRep']) + forecast_dates
-        cls.results.append((country, all_dates[-1], np.floor(all_data[-1]), np.floor(forecast)))
+        cls.all_data = np.concatenate([cls.cases_data, forecast])
+        all_data_cum = cls.all_data.cumsum()
+        cls.all_dates = list(DataHandler.country_dataset['dateRep']) + forecast_dates
+        cls.results.append((country, cls.all_dates[-1], np.floor(all_data_cum[-1]), np.floor(forecast)))
 
     @classmethod
     def save_results(cls):
         results = pd.DataFrame(cls.results)
         results.to_csv("results.csv")
+
+    @classmethod
+    def plot_result(cls, country):
+        plt.title(country)
+        plt.plot(cls.all_dates, cls.all_data)
+        #plt.show()
+        plt.savefig(cls.plots_dir + country)
+        plt.close()
