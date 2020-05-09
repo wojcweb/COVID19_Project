@@ -26,7 +26,8 @@ def get_europe_data(covid_dataset):
     list_of_countries = list(covid_dataset["countriesAndTerritories"].unique())
     covid_dataset = covid_dataset.iloc[::-1]
     covid_dataset.reset_index(drop=True, inplace=True)
-    return list_of_countries
+    #covid_dataset_ref = covid_dataset.copy()
+    return list_of_countries, covid_dataset
 
 
 def get_country_data(covid_dataset, country):
@@ -78,7 +79,7 @@ def main():
     num_prediction = 7
     num_epochs = 300
     covid_dataset = import_covid_data()
-    list_of_countries = get_europe_data(covid_dataset)
+    list_of_countries, covid_dataset = get_europe_data(covid_dataset)
     results = []
     for country in list_of_countries:
         country_dataset, cases_data = get_country_data(covid_dataset, country)
