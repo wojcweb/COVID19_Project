@@ -142,3 +142,13 @@ cython_debug/
 
 # Project
 .idea/
+
+*.csv
+*.request
+*.path
+tf
+pd
+plt
+np
+json
+datetime
