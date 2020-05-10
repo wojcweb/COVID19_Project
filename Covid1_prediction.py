@@ -1,7 +1,7 @@
 import tensorflow as tf
 from Data_handler import DataHandler
 from Neural_network import NeuralNetwork
-import os
+import timeit
 
 def main():
     look_back = 10
@@ -13,8 +13,9 @@ def main():
     network = NeuralNetwork(look_back, num_prediction, num_epochs)
 
     for country in data_menager.list_of_countries[-14:-12]:
+        begin = timeit.default_timer()
         print("**********************************************************")
-        print("******************** " + country+ " **********************")
+        print("******************** " + country + " **********************")
         print("**********************************************************")
         data_menager.get_country_data(country)
 
@@ -25,7 +26,7 @@ def main():
 
         data_menager.append_results(country, forecast, forecast_dates)
         data_menager.plot_result(country)
-
+        print('Time: ' + str(timeit.default_timer() - begin))
     data_menager.save_results()
     data_menager.save_params(network.get_parameters())
 
