@@ -21,15 +21,16 @@ class NeuralNetwork:
     def define_model(self): #put outside loop? where to define model?
         #what about compiling already compiled model model in loop? (no re-declaring)
         self.model = keras.Sequential()
-        self.model.add(keras.layers.LSTM(16, activation='relu',
+        self.model.add(keras.layers.LSTM(128, activation='relu',
                                     input_shape=(self.look_back, 1)))
+        self.model.add(keras.layers.Dense(16, activation='relu',))
         self.model.add(keras.layers.Dense(1, activation='linear'))
 
     def train_model(self, cases_data):
         opt = keras.optimizers.Adam(learning_rate=0.0005)
         train_generator = self.get_train_generator(cases_data)
         self.model.compile(optimizer=opt, loss='mae')
-        self.model.fit_generator(train_generator, epochs=self.num_epochs, verbose=1)
+        self.model.fit_generator(train_generator, epochs=self.num_epochs, verbose=0)#verbose=1 talks
         self.model.predict_generator(train_generator)
 
     def predict(self, model, cases_data):
@@ -51,3 +52,6 @@ class NeuralNetwork:
         forecast_dates = self.predict_dates(country_dataset)
         forecast = np.reshape(forecast, (-1, 1))
         return forecast, forecast_dates
+
+    def get_parameters(self):
+        return [self.look_back, self.num_prediction, self.num_epochs]

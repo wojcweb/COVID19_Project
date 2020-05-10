@@ -4,25 +4,30 @@ from Neural_network import NeuralNetwork
 import os
 
 def main():
-    look_back = 3
+    look_back = 10
     num_prediction = 15
     num_epochs = 300
-    DataHandler.menage_directories()
+    data_menager = DataHandler()#optional: continent, default: europe
+    data_menager.download_data()
+    data_menager.get_continent_data()
     network = NeuralNetwork(look_back, num_prediction, num_epochs)
-    DataHandler.download_data()
-    DataHandler.get_europe_data()
 
-    for country in DataHandler.list_of_countries[-15:-12]:
-        DataHandler.get_country_data(country)
+    for country in data_menager.list_of_countries[-14:-12]:
+        print("**********************************************************")
+        print("******************** " + country+ " **********************")
+        print("**********************************************************")
+        data_menager.get_country_data(country)
+
         network.define_model()
-        network.train_model(DataHandler.cases_data)
+        network.train_model(data_menager.cases_data)
+        forecast, forecast_dates = network.get_forecast(data_menager.cases_data,
+                                                        data_menager.country_dataset)
 
-        forecast, forecast_dates = network.get_forecast(DataHandler.cases_data,
-                                                        DataHandler.country_dataset)
-        DataHandler.append_results(country, forecast, forecast_dates)
-        DataHandler.plot_result(country)
+        data_menager.append_results(country, forecast, forecast_dates)
+        data_menager.plot_result(country)
 
-    DataHandler.save_results()
+    data_menager.save_results()
+    data_menager.save_params(network.get_parameters())
 
 
 if __name__ == "__main__":
