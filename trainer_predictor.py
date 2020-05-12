@@ -5,6 +5,7 @@ import numpy as np
 import datetime
 import pandas as pd
 
+
 class TrainerPredictor(NNCreator):
 
     def __init__(self, look_back, batch_size, epochs, optimizer, loss, num_of_lstm_neurons):
@@ -27,10 +28,10 @@ class TrainerPredictor(NNCreator):
     def do_forecast(self, num_of_prediction, dataset, dataset_raw):
         prediction_list = dataset[-self._look_back:]
         for _ in range(num_of_prediction):
-                x = prediction_list[-self._look_back:]
-                x = x.reshape((1, self._look_back, 1))
-                out = self._model.predict(x)[0][0]
-                prediction_list = np.append(prediction_list, out)
+            x = prediction_list[-self._look_back:]
+            x = x.reshape((1, self._look_back, 1))
+            out = self._model.predict(x)[0][0]
+            prediction_list = np.append(prediction_list, out)
         prediction_list = prediction_list[self._look_back:]
 
         last_date = dataset_raw["dateRep"].iloc[-1]
