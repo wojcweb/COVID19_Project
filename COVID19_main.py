@@ -18,7 +18,7 @@ opt = Adam(learning_rate=0.0002)
 loss = mean_absolute_error
 network_handler = TrainerPredictor(look_back=10, batch_size=10, epochs=250, optimizer=opt, loss=loss,
                                    num_of_lstm_neurons=32)
-# list_of_countries = [list_of_countries[0]]
+list_of_countries = [list_of_countries[0]]
 for country in list_of_countries:
     data_to_train, raw_data = data_handler.get_dataset_for_country(country)
 
@@ -31,10 +31,10 @@ for country in list_of_countries:
     # plt.title(country)
     markers_on = all_data.copy()
     markers_on[:len(raw_data)] = np.nan
-    # plt.title(country)
-    # plt.plot(all_dates, all_data, color='b')
-    # plt.plot(all_dates, markers_on, color='r')
-    # plt.show()
+    plt.title(country)
+    plt.plot(all_dates, all_data, color='b')
+    plt.plot(all_dates, markers_on, color='r')
+    plt.show
 
     all_data = all_data.cumsum()
     results.append((country, all_dates[-1], np.floor(all_data[-1]), np.floor(forecast)))
