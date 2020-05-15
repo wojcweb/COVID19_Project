@@ -1,6 +1,7 @@
 import pandas as pd
 import urllib.request
 import numpy as np
+from scipy import signal
 
 
 class DataSetHandler:
@@ -27,8 +28,9 @@ class DataSetHandler:
 
     def get_dataset_for_country(self, country):
         self.__data_covid_ref = self.__data_covid.loc[self.__data_covid["countriesAndTerritories"] == country]
-        self.__data_covid_ref["dateRep"] = pd.to_datetime( self.__data_covid_ref["dateRep"], format="%d/%m/%Y")
+        self.__data_covid_ref["dateRep"] = pd.to_datetime(self.__data_covid_ref["dateRep"], format="%d/%m/%Y")
         # self.__data_covid_ref["cases"] = self.__data_covid_ref['cases'].rolling(window=5).mean()
-        cases_data = np.array( self.__data_covid_ref['cases'].values)
+        # self.__data_covid_ref["cases"] = signal.savgol_filter(self.__data_covid_ref["cases"], 21, 3)
+        cases_data = np.array(self.__data_covid_ref['cases'].values)
         cases_data = np.reshape(cases_data, (-1, 1))
         return cases_data, self.__data_covid_ref

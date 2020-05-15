@@ -1,10 +1,8 @@
 from NN_creator import NNCreator
-from tensorflow import keras
 from tensorflow.keras.preprocessing.sequence import TimeseriesGenerator
 import numpy as np
 import datetime
 import pandas as pd
-
 
 
 class TrainerPredictor(NNCreator):
@@ -24,7 +22,7 @@ class TrainerPredictor(NNCreator):
     def train_model(self, dataset):
         self.compile_network(self.__optimizer, self.__loss)
         train_generator = self.generate_timeseries(dataset)
-        self._model.fit_generator(train_generator, epochs=self.__epochs, verbose=1)
+        self._model.fit(train_generator, epochs=self.__epochs, verbose=1)
 
     def do_forecast(self, date_to_predict, dataset, dataset_raw):
         last_date = dataset_raw["dateRep"].iloc[-1]

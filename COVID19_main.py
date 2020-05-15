@@ -14,8 +14,8 @@ results = []
 report_date = []
 all_dates = []
 list_of_countries = data_handler.list_of_countries
-opt = Adam(learning_rate=0.0002)
-loss = mean_absolute_error
+opt = Adam(learning_rate=0.0001)
+loss = mean_squared_error
 network_handler = TrainerPredictor(look_back=10, batch_size=10, epochs=250, optimizer=opt, loss=loss,
                                    num_of_lstm_neurons=32)
 list_of_countries = [list_of_countries[0]]
@@ -28,13 +28,12 @@ for country in list_of_countries:
     forecast = np.reshape(forecast, (-1, 1))
     all_data = np.concatenate([data_to_train, forecast])
     all_dates = list(raw_data['dateRep']) + forecast_date
-    # plt.title(country)
     markers_on = all_data.copy()
     markers_on[:len(raw_data)] = np.nan
     plt.title(country)
     plt.plot(all_dates, all_data, color='b')
     plt.plot(all_dates, markers_on, color='r')
-    plt.show
+    plt.show()
 
     all_data = all_data.cumsum()
     results.append((country, all_dates[-1], np.floor(all_data[-1]), np.floor(forecast)))
