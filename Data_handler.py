@@ -78,6 +78,7 @@ class DataHandler:
     def plot_result(self, country):
         plt.title(country)
         plt.plot(self.all_dates, self.all_data)
+        plt.plot(self.all_dates[-10:], self.all_data[-10:])
         #plt.show()
         plt.savefig(self.plots_dir + country)
         plt.close()
