@@ -4,15 +4,15 @@ from Neural_network import NeuralNetwork
 import timeit
 
 def main():
-    look_back = 10
-    num_prediction = 10
-    num_epochs = 300
+    look_back = 15
+    num_prediction =7
+    num_epochs = 350
     data_menager = DataHandler()#optional: continent, default: europe
     data_menager.download_data()
     data_menager.get_continent_data()
     network = NeuralNetwork(look_back, num_prediction, num_epochs)
-    countries = ["Poland", "Spain"]# "Italy", "Czechia"]
-    for country  in countries:#data_menager.list_of_countries[1:3]:
+    # countries = ["Poland", "Spain"]# "Italy", "Czechia"]
+    for country  in data_menager.list_of_countries[1:10]:
         begin = timeit.default_timer()
         print("**********************************************************")
         print("******************** " + country + " **********************")

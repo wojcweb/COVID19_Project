@@ -31,7 +31,7 @@ class NeuralNetwork:
 
 
     def train_model(self, cases_data):
-        opt = keras.optimizers.Adam(learning_rate=0.0005)
+        opt = keras.optimizers.Adam(learning_rate=0.00005)
         train_generator = self.get_train_generator(cases_data)
         self.model.compile(optimizer=opt, loss='mae')
         self.model.fit(train_generator, epochs=self.num_epochs, verbose=1)#verbose=1 talks
