@@ -59,10 +59,12 @@ class DataHandler:
         self.cases_data = np.reshape(self.cases_data, (-1, 1))
 
     def append_results(self, country, forecast, forecast_dates):
-        self.all_data = np.concatenate([self.cases_data, forecast])
-        all_data_cum = self.all_data.cumsum()
-        self.all_dates = list(self.country_dataset['dateRep']) + forecast_dates
-        self.results.append((country, self.all_dates[-1], np.floor(all_data_cum[-1]), np.floor(forecast)))
+        self.all_data = np.concatenate([self.cases_data[:-41], forecast])
+        self.all_data_cum_forecast = self.all_data.cumsum()
+        self.all_data_cum = self.cases_data[:-11].cumsum()
+        dates = self.country_dataset['dateRep']
+        self.all_dates = list(dates[:-41]) + forecast_dates
+        self.results.append((country, self.all_dates[-1], np.floor(self.all_data_cum_forecast[-1]), np.floor(forecast)))
 
     def save_results(self):
         results = pd.DataFrame(self.results)
@@ -78,7 +80,13 @@ class DataHandler:
     def plot_result(self, country):
         plt.title(country)
         plt.plot(self.all_dates, self.all_data)
-        plt.plot(self.all_dates[-10:], self.all_data[-10:])
-        #plt.show()
-        plt.savefig(self.plots_dir + country)
+        plt.plot(self.all_dates[-30:], self.all_data[-30:])
+        plt.plot(self.all_dates[-30:], self.cases_data[-41:-11])
+        plt.savefig(self.plots_dir + "daily_" + country)
+        # plt.show()
+        plt.close()
+        plt.plot(self.all_dates, self.all_data_cum_forecast)
+        plt.plot(self.all_dates[-30:], self.all_data_cum_forecast[-30:])
+        plt.plot(self.all_dates[-30:], self.all_data_cum[-30:])
+        plt.savefig(self.plots_dir + "AAll_" + country)
         plt.close()
