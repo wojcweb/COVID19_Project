@@ -12,7 +12,8 @@ def main():
     data_menager.get_continent_data()
     network = NeuralNetwork(look_back, num_prediction, num_epochs)
     countries = ["Poland", "Spain", "Italy", "Framce", "Germany"]
-    for country  in countries:
+    # country = "Poland"
+    for country in countries:
         begin = timeit.default_timer()
         print("**********************************************************")
         print("******************** " + country + " **********************")
@@ -26,6 +27,8 @@ def main():
         data_menager.append_results(country, forecast, forecast_dates)
         data_menager.plot_result(country)
         print('Time: ' + str(timeit.default_timer() - begin))
+        data_menager.add_country_cases()
+    data_menager.plot_cumsum()
     data_menager.save_results()
     data_menager.save_params(network.get_parameters())
 

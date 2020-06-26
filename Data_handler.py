@@ -17,7 +17,8 @@ class DataHandler:
         self.results = []
         self.all_dates = list()
         self.all_data = np.array(1)
-
+        self.all_countries_cases = np.zeros(300)
+        self.all_countries_cases_forecast = np.zeros(300)
         self.continent = continent
         self.script_dir = os.path.dirname(__file__)
         self.results_dir = os.path.join(self.script_dir, 'Results/')
@@ -89,4 +90,18 @@ class DataHandler:
         plt.plot(self.all_dates[-30:], self.all_data_cum_forecast[-30:])
         plt.plot(self.all_dates[-30:], self.all_data_cum[-30:])
         plt.savefig(self.plots_dir + "AAll_" + country)
+        plt.close()
+
+    def add_country_cases(self):
+            self.all_countries_cases[-self.all_data_cum.shape[0]:] += self.all_data_cum
+            self.all_countries_cases_forecast[-self.all_data_cum_forecast.shape[0]:] += self.all_data_cum_forecast
+
+    def plot_cumsum(self):
+        self.all_countries_cases = self.all_countries_cases[self.all_countries_cases != 0]
+        self.all_countries_cases_forecast = self.all_countries_cases_forecast[self.all_countries_cases_forecast != 0]
+        plt.title('dupa')
+        plt.plot(self.all_dates[-self.all_countries_cases.shape[0]:], self.all_countries_cases)
+        plt.plot(self.all_dates[-30:], self.all_countries_cases_forecast[-30:])
+        plt.savefig(self.plots_dir + "daily_dupa")
+        plt.show()
         plt.close()
